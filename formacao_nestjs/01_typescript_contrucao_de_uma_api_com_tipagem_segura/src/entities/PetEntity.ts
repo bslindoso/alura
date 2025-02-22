@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export default class PetEntity {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
   @Column()
   nome: string;
   @Column()
@@ -14,4 +14,11 @@ export default class PetEntity {
   especie: EspeciesEnum;
   @Column()
   adotado: boolean;
+
+  constructor(nome: string, dataDeNascimento: Date, especie: EspeciesEnum, adotado: boolean) {
+    this.nome = nome;
+    this.especie = especie;
+    this.dataDeNascimento = dataDeNascimento;
+    this.adotado = adotado;
+  }
 }

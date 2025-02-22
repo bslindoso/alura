@@ -1,35 +1,27 @@
 import { Request, Response } from "express";
-import type petType from "../types/petType";
 import EspeciesEnum from "../enum/EspeciesEnum";
 import PetRepository from "../repositories/PetRepository";
 import PetEntity from "../entities/PetEntity";
-
-let listaDePets: petType[] = [];
-
-let id = 0;
-function geraId() {
-  return ++id;
-}
 
 export default class PetController {
 
   constructor(private repository: PetRepository) { }
 
-  criaPet(req: Request, res: Response): any {
+  async criaPet(req: Request, res: Response): Promise<any> {
     const { nome, dataDeNascimento, especie, adotado } = req.body as PetEntity;
 
     if (!Object.values(EspeciesEnum).includes(especie)) {
       return res.status(400).json({ erro: "Especie inválida" });
     }
-    const novoPet = new PetEntity();
+    const novoPet = new PetEntity(nome, dataDeNascimento, especie, adotado);
 
-    novoPet.id = geraId()
-    novoPet.nome = nome;
-    novoPet.dataDeNascimento = dataDeNascimento;
-    novoPet.especie = especie;
+
+    if (!Object.values(EspeciesEnum).includes(especie)) {
+      return res.status(400).json({ erro: "Especie inválida" });
+    }
     novoPet.adotado = adotado;
 
-    this.repository.criaPet(novoPet);
+    await this.repository.criaPet(novoPet);
 
     return res.status(201).json(novoPet);
   }
@@ -49,15 +41,13 @@ export default class PetController {
     return res.sendStatus(204)
   }
 
-  deletaPet(req: Request, res: Response): any {
+  async deletaPet(req: Request, res: Response): Promise<any> {
     const { id } = req.params;
-    const pet = listaDePets.find((pet) => pet.id === Number(id));
-    if (!pet) {
-      return res.status(404).json({ erro: "Pet não encontrado" });
+    const { success, message } = await this.repository.deletaPet(Number(id));
+    if (!success) {
+      return res.status(404).json({ message });
     }
-    const index = listaDePets.indexOf(pet);
-    listaDePets.splice(index, 1);
-    return res.status(200).json({ mensagem: "Pet deletado com sucesso" });
+    return res.sendStatus(204)
   }
 }
 
