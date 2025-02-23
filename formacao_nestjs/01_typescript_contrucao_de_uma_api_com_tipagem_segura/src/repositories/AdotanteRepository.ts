@@ -11,4 +11,7 @@ export class AdotanteRepository implements InterfaceAdotanteRepository {
   async criaAdotante(adotante: AdotanteEntity): Promise<void> {
     await this.repository.save(adotante);
   }
+  async listaAdotantes(): Promise<AdotanteEntity[]> {
+    return await this.repository.find();
+  }
 }
