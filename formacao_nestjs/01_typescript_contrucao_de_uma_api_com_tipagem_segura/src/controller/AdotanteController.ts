@@ -1,6 +1,7 @@
 import AdotanteEntity from "../entities/AdotanteEntity";
 import { AdotanteRepository } from "../repositories/AdotanteRepository";
 import { Request, Response } from "express";
+import { StatusCode } from "../utils/statusCodes";
 
 export default class AdotanteController {
 
@@ -15,20 +16,20 @@ export default class AdotanteController {
 
       await this.repository.criaAdotante(novoAdotante);
 
-      return res.status(201).json(novoAdotante);
+      return res.status(StatusCode.CREATED).json(novoAdotante);
 
     } catch (error) {
 
-      return res.status(500).json({ error: 'Erro ao criar o adotante' });
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: 'Erro ao criar o adotante' });
     }
   };
 
   async listaAdotantes(req: Request, res: Response): Promise<any> {
     try {
       const adotantes = await this.repository.listaAdotantes();
-      return res.status(200).json(adotantes);
+      return res.status(StatusCode.OK).json(adotantes);
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao listar os adotantes' });
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: 'Erro ao listar os adotantes' });
     }
   };
 
@@ -37,9 +38,9 @@ export default class AdotanteController {
       const { id } = req.params;
       const { success, message } = await this.repository.atualizaAdotante(Number(id), req.body as AdotanteEntity);
       if (!success) {
-        return res.status(404).json({ message });
+        return res.status(StatusCode.NOT_FOUND).json({ message });
       }
-      return res.sendStatus(204);
+      return res.sendStatus(StatusCode.NO_CONTENT);
     } catch (error) {
 
     }
