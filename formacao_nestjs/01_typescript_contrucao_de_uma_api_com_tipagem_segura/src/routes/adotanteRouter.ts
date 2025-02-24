@@ -10,5 +10,6 @@ const adotanteController = new AdotanteController(adotanteRepository);
 
 router.post("/", (req, res) => adotanteController.criaAdotante(req, res));
 router.get("/", (req, res) => adotanteController.listaAdotantes(req, res));
+router.put("/:id", (req, res) => adotanteController.atualizaAdotante(req, res));
 
 export default router;

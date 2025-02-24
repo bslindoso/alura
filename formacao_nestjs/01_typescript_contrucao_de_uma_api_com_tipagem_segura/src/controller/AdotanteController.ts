@@ -32,4 +32,17 @@ export default class AdotanteController {
     }
   };
 
+  async atualizaAdotante(req: Request, res: Response): Promise<any> {
+    try {
+      const { id } = req.params;
+      const { success, message } = await this.repository.atualizaAdotante(Number(id), req.body as AdotanteEntity);
+      if (!success) {
+        return res.status(404).json({ message });
+      }
+      return res.sendStatus(204);
+    } catch (error) {
+
+    }
+  }
+
 }
